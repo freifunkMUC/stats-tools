@@ -18,7 +18,7 @@ def get_metrics(timestamp, stats, prefix=''):
 def load_metrics(f):
     nodes = json.load(f)
     for (node_id,node_data) in nodes['nodes'].items():
-        for m in get_metrics(int(time()), node_data['statistics'], 'test.nodes.' + node_id):
+        for m in get_metrics(int(time()), node_data['statistics'], 'nodes.' + node_id):
             yield m
 
 def get_pickled_msg(metrics):
