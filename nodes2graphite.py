@@ -17,9 +17,18 @@ def get_metrics(timestamp, stats, prefix=''):
 
 def load_metrics(f):
     nodes = json.load(f)
+    ts = int(time())
+    online_nodes = 0
+    total_clients = 0
     for (node_id,node_data) in nodes['nodes'].items():
-        for m in get_metrics(int(time()), node_data['statistics'], 'nodes.' + node_id):
+        for m in get_metrics(ts, node_data['statistics'], 'nodes.' + node_id):
             yield m
+        total_clients += node_data['statistics']['clients']
+        if node_data['flags']['online']: online_nodes += 1
+
+    yield ('node-stats.online', (ts, online_nodes))
+    yield ('node-stats.clients', (ts, total_clients))
+
 
 def get_pickled_msg(metrics):
     payload = pickle.dumps(list(metrics), protocol=2)
